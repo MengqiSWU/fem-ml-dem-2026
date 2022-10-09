@@ -1,0 +1,5 @@
+PYTHONUNBUFFERED=1;
+
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/shguan/escript/src/lib:/home/shguan/yade/build/lib/x86_64-linux-gnu;
+
+PYTHONPATH=$PYTHONPATH:/home/shguan/fem-ml-dem-remote:/home/shguan/fem-ml-dem-remote/FEMxML:/home/shguan/fem-ml-dem-remote/FEMxDEM:/home/shguan/escript/src

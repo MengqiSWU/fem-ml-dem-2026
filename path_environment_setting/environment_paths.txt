@@ -1,0 +1,11 @@
+#--------------------------------remote environment shguan whu----------------------------------------------------------------
+PYTHONUNBUFFERED=1;LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/shguan/escript/src/lib:/home/shguan/yade/build/lib/x86_64-linux-gnu;PYTHONPATH=$PYTHONPATH:/home/shguan/fem-ml-dem-remote:/home/shguan/fem-ml-dem-remote/FEMxML:/home/shguan/fem-ml-dem-remote/FEMxDEM:/home/shguan/fem-ml-dem-remote/FEMxEPxML:/home/shguan/escript/src
+
+
+#--------------------------------remote environment tongming----------------------------------------------------------------
+PYTHONUNBUFFERED=1;LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/tongming/escript/lib:/home/tongming/yade/install/lib/x86_64-linux-gnu/yade-2022-08-01.git-f890b06;PYTHONPATH=$PYTHONPATH:/home/tongming/fem-ml-dem:/home/tongming/fem-ml-dem/FEMxML:/home/tongming/fem-ml-dem/FEMxDEM:/home/tongming/fem-ml-dem/FEMxEPxML:/home/tongming/escript
+
+#--------------------------------environment on virtual machine--------------------------------
+PYTHONUNBUFFERED=1;LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/shguan/esys-escript/lib:/home/shguan/yade/install/lib/x86_64-linux-gnu/yade-2022-05-16.git-92a03fb;PYTHONPATH=$PYTHONPATH:/mnt/hgfs/ubuntu_exchange/fem-ml-dem:/mnt/hgfs/ubuntu_exchange/fem-ml-dem/FEMxML:/mnt/hgfs/ubuntu_exchange/fem-ml-dem/FEMxDEM:/mnt/hgfs/ubuntu_exchange/fem-ml-dem/FEMxEPxML:/home/shguan/esys-escript
+
+
