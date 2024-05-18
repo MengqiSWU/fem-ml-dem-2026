@@ -23,8 +23,12 @@ def initLoad(ID=0):  # where ID identifies the Gauss point location
     if 1:
         # All Gauss points import 0.yade.gz resulting in a uniform sample (default)
         try:
-            fname = './FEMxDEM/p_1e5_499.yade.gz'
+            fname = './FEMxDEM/p_1e5_400.yade.gz'  # for biaxial
             # fname = './FEMxDEM/lwj.yade.gz'
+            # fname = './FEMxDEM/p_5e4_400.yade.gz'
+            # fname = './FEMxDEM/p_6e4_400.yade.gz'  # final for footing
+            # fname = './FEMxDEM/p_2e4_400.yade.gz'
+
             Omega().load(fname)
             print(fname)
         except:
@@ -46,7 +50,9 @@ def initLoad3D(ID=0):  # where ID identifies the Gauss point location
     if 1:
         # All Gauss points import 0.yade.gz resulting in a uniform sample (default)
         try:
-            Omega().load('3D.yade.gz')
+            fname = './FEMxDEM/3D.yade.gz'
+            Omega().load(fname)
+            print(fname)
         except:
             import time
             print("=================================================================================")

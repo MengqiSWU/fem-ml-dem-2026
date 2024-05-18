@@ -1,0 +1,66 @@
+--------------------------------------------------------------------------------
+2024/04/22  21:53:06
+PatienceNum:	50000
+Save path:	./triax_ml_1e5/X_epsAND3d_Y_D_dddd20_Fourier_noRotate_FEM_DEM_D
+Number of training samples:	1219800
+Model architecture:	 Net(
+  (activation): Sigmoid()
+  (first): Linear(in_features=49, out_features=20, bias=True)
+  (B): Linear(in_features=9, out_features=20, bias=True)
+  (layers): ModuleList(
+    (0): Linear(in_features=20, out_features=20, bias=True)
+    (1): Linear(in_features=20, out_features=20, bias=True)
+    (2): Linear(in_features=20, out_features=20, bias=True)
+    (3): Linear(in_features=20, out_features=21, bias=True)
+  )
+)
+Optimizer:	Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: False
+    lr: 0.001
+    maximize: False
+    weight_decay: 0
+)
+--------------------------------------------------------------------------------
+Epoch:1	 trainLoss: 9.400099e-01 validationLoss: 9.424667e-01 miniLoss: 9.424667e-01	Improved!	ConsumedTime 8.320594e-03 mins
+Epoch:1000	 trainLoss: 1.072181e-01 validationLoss: 1.076933e-01 miniLoss: 1.076933e-01	Improved!	ConsumedTime 1.059652e+00 mins
+Epoch:2000	 trainLoss: 8.855562e-02 validationLoss: 8.886471e-02 miniLoss: 8.886471e-02	Improved!	ConsumedTime 2.113913e+00 mins
+Epoch:3000	 trainLoss: 8.444818e-02 validationLoss: 8.478886e-02 miniLoss: 8.478886e-02	Improved!	ConsumedTime 3.169833e+00 mins
+Epoch:4000	 trainLoss: 8.010084e-02 validationLoss: 8.046385e-02 miniLoss: 8.046385e-02	Improved!	ConsumedTime 4.226427e+00 mins
+Epoch:5000	 trainLoss: 7.804059e-02 validationLoss: 7.841612e-02 miniLoss: 7.841612e-02	Improved!	ConsumedTime 5.283129e+00 mins
+Epoch:6000	 trainLoss: 7.551911e-02 validationLoss: 7.587403e-02 miniLoss: 7.587403e-02	Improved!	ConsumedTime 6.339877e+00 mins
+Epoch:7000	 trainLoss: 7.447476e-02 validationLoss: 7.481606e-02 miniLoss: 7.481606e-02	Improved!	ConsumedTime 7.402772e+00 mins
+Epoch:8000	 trainLoss: 7.365030e-02 validationLoss: 7.397836e-02 miniLoss: 7.397836e-02	Improved!	ConsumedTime 8.463276e+00 mins
+Epoch:9000	 trainLoss: 7.399888e-02 validationLoss: 7.432561e-02 miniLoss: 7.397836e-02	No improvement!	ConsumedTime 9.521692e+00 mins
+Epoch:10000	 trainLoss: 7.309713e-02 validationLoss: 7.342684e-02 miniLoss: 7.342684e-02	Improved!	ConsumedTime 1.058029e+01 mins
+Epoch:11000	 trainLoss: 7.230768e-02 validationLoss: 7.262581e-02 miniLoss: 7.262581e-02	Improved!	ConsumedTime 1.163869e+01 mins
+Epoch:12000	 trainLoss: 7.198605e-02 validationLoss: 7.230099e-02 miniLoss: 7.230099e-02	Improved!	ConsumedTime 1.269729e+01 mins
+Epoch:13000	 trainLoss: 7.168888e-02 validationLoss: 7.200258e-02 miniLoss: 7.200258e-02	Improved!	ConsumedTime 1.375573e+01 mins
+Epoch:14000	 trainLoss: 7.143624e-02 validationLoss: 7.174408e-02 miniLoss: 7.174408e-02	Improved!	ConsumedTime 1.481426e+01 mins
+Epoch:15000	 trainLoss: 7.128344e-02 validationLoss: 7.158694e-02 miniLoss: 7.158694e-02	Improved!	ConsumedTime 1.587277e+01 mins
+Epoch:16000	 trainLoss: 7.099748e-02 validationLoss: 7.129713e-02 miniLoss: 7.129713e-02	Improved!	ConsumedTime 1.693134e+01 mins
+Epoch:17000	 trainLoss: 7.080939e-02 validationLoss: 7.110616e-02 miniLoss: 7.110616e-02	Improved!	ConsumedTime 1.798989e+01 mins
+Epoch:18000	 trainLoss: 7.077672e-02 validationLoss: 7.106940e-02 miniLoss: 7.106940e-02	Improved!	ConsumedTime 1.904853e+01 mins
+Epoch:19000	 trainLoss: 7.046953e-02 validationLoss: 7.075982e-02 miniLoss: 7.075982e-02	Improved!	ConsumedTime 2.010704e+01 mins
+Epoch:20000	 trainLoss: 7.038167e-02 validationLoss: 7.066891e-02 miniLoss: 7.066891e-02	Improved!	ConsumedTime 2.116562e+01 mins
+Epoch:21000	 trainLoss: 7.123743e-02 validationLoss: 7.152275e-02 miniLoss: 7.066891e-02	No improvement!	ConsumedTime 2.222413e+01 mins
+Epoch:22000	 trainLoss: 7.005048e-02 validationLoss: 7.033495e-02 miniLoss: 7.033495e-02	Improved!	ConsumedTime 2.328272e+01 mins
+Epoch:23000	 trainLoss: 6.985691e-02 validationLoss: 7.014004e-02 miniLoss: 7.014004e-02	Improved!	ConsumedTime 2.434120e+01 mins
+Epoch:24000	 trainLoss: 6.975368e-02 validationLoss: 7.003649e-02 miniLoss: 7.003649e-02	Improved!	ConsumedTime 2.539977e+01 mins
+Epoch:25000	 trainLoss: 6.959187e-02 validationLoss: 6.987438e-02 miniLoss: 6.987438e-02	Improved!	ConsumedTime 2.645829e+01 mins
+Epoch:26000	 trainLoss: 6.947555e-02 validationLoss: 6.975833e-02 miniLoss: 6.975833e-02	Improved!	ConsumedTime 2.751703e+01 mins
+Epoch:27000	 trainLoss: 6.936631e-02 validationLoss: 6.964856e-02 miniLoss: 6.964856e-02	Improved!	ConsumedTime 2.857561e+01 mins
+Epoch:28000	 trainLoss: 6.926864e-02 validationLoss: 6.954961e-02 miniLoss: 6.954961e-02	Improved!	ConsumedTime 2.963417e+01 mins
+Epoch:29000	 trainLoss: 6.957711e-02 validationLoss: 6.986004e-02 miniLoss: 6.954961e-02	No improvement!	ConsumedTime 3.069282e+01 mins
+Epoch:30000	 trainLoss: 7.130773e-02 validationLoss: 7.157519e-02 miniLoss: 6.954961e-02	No improvement!	ConsumedTime 3.175151e+01 mins
+Epoch:31000	 trainLoss: 6.898768e-02 validationLoss: 6.926861e-02 miniLoss: 6.926861e-02	Improved!	ConsumedTime 3.281018e+01 mins
+Epoch:32000	 trainLoss: 6.890380e-02 validationLoss: 6.918384e-02 miniLoss: 6.918384e-02	Improved!	ConsumedTime 3.386875e+01 mins
+Epoch:33000	 trainLoss: 6.895924e-02 validationLoss: 6.923545e-02 miniLoss: 6.918384e-02	No improvement!	ConsumedTime 3.492734e+01 mins
+Epoch:34000	 trainLoss: 6.875379e-02 validationLoss: 6.903064e-02 miniLoss: 6.903064e-02	Improved!	ConsumedTime 3.598594e+01 mins
+Epoch:35000	 trainLoss: 6.899637e-02 validationLoss: 6.927098e-02 miniLoss: 6.903064e-02	No improvement!	ConsumedTime 3.704450e+01 mins

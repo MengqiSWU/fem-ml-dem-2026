@@ -43,13 +43,13 @@ def echo(*args):
         print('\t%s' % i)
 
 
-def getCons(mode, ndim=3, pool=None, nump=1, explicitFlag=False, numg=None, **kwargs):
+def getCons(mode, ndim=3,  nump=1, explicitFlag=False, numg=None, **kwargs):   # pool=None, 改进后的调用多进程不用pool
     if 'vonmises' in mode:
         from FEMxEPxML.vonmisesCons import vonmisesConstitutive
         save_flag = True
         cons = vonmisesConstitutive(
-            explicitFlag=explicitFlag, numg=numg, pool=pool,
-            p0=kwargs['p0'], poisson=kwargs['poisson'], E=kwargs['E'], rho=kwargs['rho'],
+            explicitFlag=explicitFlag, numg=numg, nump=nump,
+            p0=kwargs['p0'], nu=kwargs['poisson'], E=kwargs['E'], rho=kwargs['rho'],
             verboseFlag=False, ndim=ndim, save_path=kwargs['save_path'], save_flag=save_flag)
     elif mode == 'eb':
         from FEMxEPxML.EBmodelCons import EBmodelConstitutive
@@ -59,16 +59,16 @@ def getCons(mode, ndim=3, pool=None, nump=1, explicitFlag=False, numg=None, **kw
         cons = csuhConstitutive(
             explicitFlag=explicitFlag, ndim=ndim, rho=kwargs['rho'],
             p0=kwargs['p0'],
-            numg=numg, pool=pool, save_path=kwargs['save_path'], save_flag=True, **kwargs['csuh_dic'])
+            numg=numg, nump=nump, save_path=kwargs['save_path'], save_flag=True, **kwargs['csuh_dic'])
     elif mode == 'uh':
         from FEMxEPxML.UHcons import uhConstitutive
         cons = uhConstitutive(
             explicitFlag=explicitFlag, ndim=ndim, rho=kwargs['rho'],
-            p0=kwargs['p0'], ocr=kwargs['ocr'], numg=numg, pool=pool, save_path=kwargs['save_path'])
+            p0=kwargs['p0'], ocr=kwargs['ocr'], numg=numg, nump=nump, save_path=kwargs['save_path'])
     elif mode == 'norsand':
         from FEMxEPxML.norsandCons import NorSandConstitutive
         cons = NorSandConstitutive(explicitFlag=explicitFlag, ndim=ndim, rho=kwargs['rho'],
-                                   p0=kwargs['p0'], numg=numg, pool=pool, e0=kwargs['e0'],
+                                   p0=kwargs['p0'], numg=numg, nump=nump, e0=kwargs['e0'],
                                    save_path=kwargs['save_path'])
     elif mode == 'mldem':
         import torch
@@ -81,15 +81,88 @@ def getCons(mode, ndim=3, pool=None, nump=1, explicitFlag=False, numg=None, **kw
             NN_D = torch.load(
                 kwargs['NN_D_path'],
                 map_location=torch.device('cpu'))
-        cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig, NN_D=NN_D, explicitFlag=explicitFlag, numg=numg,
-                                 rho=kwargs['rho'],
-                                 input_features=kwargs['input_features'], save_path=kwargs['save_path'])
+        cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig, NN_D=NN_D, explicitFlag=explicitFlag, numg=numg, nump=nump,
+                                 rho=kwargs['rho'],input_features=kwargs['input_features'], save_path=kwargs['save_path'])
+
+
+    elif mode == 'mldem3d':
+        import torch
+        from FEMxEPxML.mldemCons3d_accum import MlDemConstitutive
+        NN_sig = torch.load(
+            kwargs['NN_sig_path'],
+            map_location=torch.device('cpu'))
+
+        NN_D = None
+        if not explicitFlag:
+            NN_D = torch.load(
+                kwargs['NN_D_path'],
+                map_location=torch.device('cpu'))
+
+        cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig, NN_D=NN_D, explicitFlag=explicitFlag, numg=numg, nump=nump,
+                                 rho=kwargs['rho'], input_features=kwargs['input_features'], save_path=kwargs['save_path'])
+
+
+    #
+    # elif mode == 'mldem3d':
+    #     import torch
+    #     from FEMxEPxML.mldemCons3d_split_D import MlDemConstitutive
+    #     NN_sig = torch.load(
+    #         kwargs['NN_sig_path'],
+    #         map_location=torch.device('cpu'))
+    #
+    #     NN_Dv = None
+    #     if not explicitFlag:
+    #         NN_Dv = torch.load(
+    #             kwargs['NN_Dv_path'],
+    #             map_location=torch.device('cpu'))
+    #     NN_Dr = None
+    #     if not explicitFlag:
+    #         NN_Dr = torch.load(
+    #             kwargs['NN_Dr_path'],
+    #             map_location=torch.device('cpu'))
+    #
+    #     cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig,  NN_Dv=NN_Dv, NN_Dr=NN_Dr, explicitFlag=explicitFlag, numg=numg, nump=nump,
+    #                              rho=kwargs['rho'], input_features=kwargs['input_features'], save_path=kwargs['save_path'])
+
+
+    # elif mode == 'mldem3d':
+    #     import torch
+    #     from FEMxEPxML.mldemCons3d_split_sig import MlDemConstitutive
+    #     NN_sig = None
+    #     NN_sigv = torch.load(
+    #         kwargs['NN_sigv_path'],
+    #         map_location=torch.device('cpu'))
+    #     NN_sigr = torch.load(
+    #         kwargs['NN_sigr_path'],
+    #         map_location=torch.device('cpu'))
+    #
+    #
+    #     NN_D = None
+    #     if not explicitFlag:
+    #         NN_D = torch.load(
+    #             kwargs['NN_D_path'],
+    #             map_location=torch.device('cpu'))
+    #
+    #     cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig, NN_sigv=NN_sigv, NN_sigr=NN_sigr,  NN_D=NN_D, explicitFlag=explicitFlag, numg=numg, nump=nump,
+    #                              rho=kwargs['rho'], input_features=kwargs['input_features'], save_path=kwargs['save_path'])
+
+
+
+
     elif mode == 'dem':
         from FEMxDEM.demCons2d import demConstitutive
         cons = demConstitutive(
             p0=kwargs['p0'], ndim=2, explicitFlag=explicitFlag, numg=numg, nump=nump, save_path=kwargs['save_path'],
             save_flag=True if explicitFlag else False,
         )
+
+    elif mode == 'dem3d':
+        from FEMxDEM.demCons3d_accum import demConstitutive
+        cons = demConstitutive(
+            p0=kwargs['p0'], ndim=3, explicitFlag=explicitFlag, numg=numg, nump=nump, save_path=kwargs['save_path'],
+            save_flag=True if explicitFlag else False,
+        )
+
     elif mode == 'elastic':
         from FEMxEPxML.elasticCons import elasticConstitutive
         cons = elasticConstitutive(
@@ -114,7 +187,7 @@ def getCons(mode, ndim=3, pool=None, nump=1, explicitFlag=False, numg=None, **kw
             ndim=ndim,
             save_path=save_path, NN_sig=NN_sig, input_features=kwargs['input_features'],
             rho=kwargs['rho'],
-            p0=kwargs['p0'], explicitFlag=explicitFlag, numg=numg, pool=pool,
+            p0=kwargs['p0'], explicitFlag=explicitFlag, numg=numg, nump=nump,
             kwargs=kwargs, x_name=x_name)
     else:
         raise ValueError('Mode %s not involved yet.' % mode)
@@ -211,7 +284,7 @@ def get_time_step(rho, lam_2G, element_size, safety_coefficient=0.2):
     return time_step
 
 
-def explicit_material_constants(p0=None, nn_name=None, nn_name_D=None, csuh_para_line=None, active_iter=None):
+def explicit_material_constants(p0=None, nn_name=None, nn_name_D=None, nn_name_sigv=None, nn_name_sigr=None, nn_name_Dv=None, nn_name_Dr=None, csuh_para_line=None, active_iter=None):
     if p0 is None:
         p0 = 1e5  # confining pressure
     else:
@@ -247,7 +320,9 @@ def explicit_material_constants(p0=None, nn_name=None, nn_name_D=None, csuh_para
     if nn_name is not None:
         input_features = nn_name.split('X_')[1].split('_')[0]
         if active_iter is None:
-            kwargs['NN_sig_path'] = './FEMxML/biax_ml_1e5/%s/entire_model.pt' % nn_name
+            # kwargs['NN_sig_path'] = './FEMxML/biax_ml_1e5/%s/entire_model.pt' % nn_name   #for biaxial
+            # kwargs['NN_sig_path'] = './FEMxML/footing_ml/%s/entire_model.pt' % nn_name       #for footing
+            kwargs['NN_sig_path'] = './FEMxML/triax_ml_1e5/%s/entire_model.pt' % nn_name  # for 3d biaxial
         else:
             kwargs['NN_sig_path'] = './FEMxML/%s/entire_model_iter%d.pt' % (nn_name, active_iter)
         kwargs['input_features'] = input_features
@@ -258,11 +333,25 @@ def explicit_material_constants(p0=None, nn_name=None, nn_name_D=None, csuh_para
             kwargs['nn_name'] = temp
         else:
             kwargs['nn_name'] = os.path.split(nn_name)[-1]
+
+    if nn_name_sigv and nn_name_sigr is not None:
+        input_features = nn_name_sigv.split('X_')[1].split('_')[0]
+        kwargs['input_features'] = input_features
+        kwargs['NN_sigv_path'] = './FEMxML/triax_ml_1e5/%s/entire_model.pt' % nn_name_sigv
+        kwargs['NN_sigr_path'] = './FEMxML/triax_ml_1e5/%s/entire_model.pt' % nn_name_sigr
+
+
     if nn_name_D is not None:
         if active_iter is None:
-            kwargs['NN_D_path'] = './FEMxML/biax_ml_1e5/%s/entire_model.pt' % nn_name_D
+            # kwargs['NN_D_path'] = './FEMxML/biax_ml_1e5/%s/entire_model.pt' % nn_name_D    #for biaxial
+            # kwargs['NN_D_path'] = './FEMxML/footing_ml/%s/entire_model.pt' % nn_name_D    #for footing
+            kwargs['NN_D_path'] = './FEMxML/triax_ml_1e5/%s/entire_model.pt' % nn_name_D    #for footing
         else:
             kwargs['NN_D_path'] = './FEMxML/%s/entire_model_iter%d.pt' % (nn_name_D, active_iter)
+    elif nn_name_Dv and nn_name_Dr is not None:
+        kwargs['NN_Dv_path'] = './FEMxML/triax_ml_1e5/%s/entire_model.pt' % nn_name_Dv
+        kwargs['NN_Dr_path'] = './FEMxML/triax_ml_1e5/%s/entire_model.pt' % nn_name_Dr
+
     return p0, e0, ocr, E, poisson, lam, G, rho, nn_name, kwargs
 
 

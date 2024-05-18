@@ -23,12 +23,13 @@ from utilSelf.general import echo, mapMask, get_dic_from_string
 
 
 class csuhConstitutive(ConstitutiveMask):
-    def __init__(self, explicitFlag, numg, pool: multiprocessing.Pool, save_path, rho,
+    def __init__(self, explicitFlag, numg, save_path, rho,
                  # parameters inversed from the footing-dem simulations
                  # kappa:5.212e-02 	 lambdaa:1.488e-01 	 N:1.791e+00 	 Z:9.759e-01 	 ocr:3.599e+01 	 theta_degree:2.359e+01
-                 kappa=5.212e-02, lambdaa=1.488e-01, N=1.791e+00, Z=9.759e-01, ocr=3.599e+01, m=1.8, theta_degree=2.359e+01,
-                 p0=1e5, nu=0.2,
+                 kappa=5.212e-02, lambdaa=1.488e-01, N=1.791e+00, Z=None, ocr=3.599e+01,
 
+                 m=1.8, theta_degree=None, M=1.25,
+                 p0=1e5, nu=0.2,
                  # parameters to generate datasets familiar with the datasets in vonmises simulation
                  # kappa=0.1, lambdaa=0.1689, N=2.021, Z=0.9358, ocr=120., m=1.8, theta_degree=30,
 
@@ -36,13 +37,14 @@ class csuhConstitutive(ConstitutiveMask):
                  # p0=1e5, ocr=120., theta_degree=30.,
                  # lambdaa=0.135, kappa=0.04,
                  # nu=0.3, N=1.973, m=1.8, Z=0.933938655,
-                 verboseFlag=False, ndim=2, save_flag=False):
+                 verboseFlag=False, ndim=2, save_flag=False, nump=1, b_flag=False):
+                # 改进后的调用多进程不用pool: multiprocessing.Pool
         csuhs = [
-            csuh_single(p0=p0, ocr=ocr, Z=Z, theta_degree=theta_degree, lambdaa=lambdaa, kappa=kappa,
-                        nu=nu, N=N, m=m, verboseFlag=verboseFlag,
+            csuh_single(p0=p0, ocr=ocr, Z=Z, theta_degree=theta_degree, M=M, lambdaa=lambdaa, kappa=kappa,
+                        nu=nu, N=N, m=m, verboseFlag=verboseFlag, b_flag=b_flag,
                         explicitFlag=explicitFlag, ndim=ndim) for _ in range(numg)]
         ConstitutiveMask.__init__(
-            self, name='csuh', save_path=save_path, p0=p0, ndim=ndim, cons=csuhs, pool=pool,
+            self, name='csuh', save_path=save_path, p0=p0, ndim=ndim, cons=csuhs, nump=nump,
             explicitFlag=explicitFlag, numg=numg, rho=rho, save_flag=save_flag)
 
 

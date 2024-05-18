@@ -27,7 +27,7 @@ def generate_configuration():
         json.dump([font_1, font_2, font_3, font_4, font_5, tickParamsDic, legendDic], f, ensure_ascii=False, indent=4)
 
 
-def readTopForce_biaxial(path='/home/shguan/simu/ABS_DEM_2_4_biaxial', split_keyword='dem'):
+def readTopForce_biaxial(path='/home/mengqi/simu/biaxial_0.08', split_keyword='dem'):
     flist = os.listdir(path)
     fname = None
     for i in flist:

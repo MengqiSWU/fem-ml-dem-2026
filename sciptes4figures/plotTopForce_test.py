@@ -15,7 +15,7 @@ pathList = [
     # active learning
     # '../../simu/biaxial/biaxial_implicit_rough_dem_x2_y4_2D_order2_numG32',
     # '../../simu/biaxial/biaxial_smooth_dem_x2_y4_2D_order2_numG32',
-    '../../simu/biaxial/biax_smooth_implicit_csuh_intorder2_numg484_x2_y4_p100kPa_ocr_377.4_theta8',
+    '../../simu/biaxial_0.08/biax_rough_implicit_mldem_intorder1_numg200_x5_y10_NNX_epsANDabsxy_Y_sig_ddd10_Fourier_noRotate_FEM_DEM_MIX_sig',
             ]
 label_list = [
     'csuh smooth'

@@ -52,8 +52,9 @@ class MainTrain:
 
     def evaluation(self, x_data, y_data):
         model_restored = self.restore_evaluation()
-        np.random.seed(10002)
-        index = sampling_index(x_data, sample_num=1000)
+        np.random.seed(10005)
+        # np.random.seed(50000)
+        index = sampling_index(x_data, sample_num=500000)
         model_restored.modelEvaluation(inputs=x_data[index], outputs=y_data[index])
         return
 
@@ -80,15 +81,18 @@ class MainTrain_dy(MainTrain):
 
     def evaluation(self, x, y, dy):
         model_restored = self.restore_evaluation()
-        np.random.seed(10002)
-        index = sampling_index(x, sample_num=1000)
+        np.random.seed(10005)
+        # np.random.seed(50000)
+        index = sampling_index(x, sample_num=500000)
         model_restored.modelEvaluation_y_dy(x=x[index], y=y[index], dy=dy[index])
 
 
 def train_main_def(
         datas,
         outer_directory,
-        input_features='epsANDabsxy', output_features='D', rotate_flag=False,
+        input_features='epsANDabsxy',
+        output_features='D',
+        rotate_flag=False,
         layerList='dd',
         node_num=20,
         fourier_features=False, epoch_max=int(1e5), numSamplesUsed=int(2e5),
@@ -149,9 +153,9 @@ if __name__ == '__main__':
         fourier_features=False, outer_directory=outer_directory)
 
     # ------------------------- sig ---------------------------
-    train_main_def(
-        datas=returned_dic,
-        input_features='epsANDabsxy', output_features='sig',
-        layerList='dd',
-        node_num=20,
-        fourier_features=False, outer_directory=outer_directory)
+    # train_main_def(
+    #     datas=returned_dic,
+    #     input_features='epsANDabsxy', output_features='sig',
+    #     layerList='dd',
+    #     node_num=20,
+    #     fourier_features=False, outer_directory=outer_directory)

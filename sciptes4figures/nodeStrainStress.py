@@ -13,6 +13,9 @@ from sciptes4figures.utils_plot import configurations
 #     ml_model_path, 'ptModelH6_30_9_double_withouRetaining/epoch_5250'), trainFlag=False)
 
 
+
+
+
 def plotCurve(strain, stress, strainCoupling, stressCoupling, indexOfPoint, mesh, file_dir='retaining_gauss_implicit'):
     font_1, font_2, font_3, font_4, font_5, tickParamsDic, legendDic=configurations()
 

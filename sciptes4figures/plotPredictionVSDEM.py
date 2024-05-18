@@ -1,4 +1,4 @@
-import pandas as pd
+# import pandas as pd
 
 from FEMxML.getSeriesDataConverged import getSeriasData, getSeriasDataCoupling
 from FEMxML.train_model_strain_lastDouble import get_data, pickle_load, plot_prection

@@ -8,21 +8,21 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/tongming/escript/lib:/home/tongmin
 
 echo ==== START ====
 
-#python3 footing_tongming.py -numg_net 254 -num_mesh 303
-#python3 footing_tongming.py -numg_net 480 -num_mesh 303
-#python3 footing_tongming.py -numg_net 3114 -num_mesh 303
+#python3 footing_mengqi.py -numg_net 254 -num_mesh 303
+#python3 footing_mengqi.py -numg_net 480 -num_mesh 303
+#python3 footing_mengqi.py -numg_net 3114 -num_mesh 303
 
-#python3 footing_tongming.py -numg_net 254 -num_mesh 552
-#python3 footing_tongming.py -numg_net 480 -num_mesh 552
-#python3 footing_tongming.py -numg_net 3114 -num_mesh 552
+#python3 footing_mengqi.py -numg_net 254 -num_mesh 552
+#python3 footing_mengqi.py -numg_net 480 -num_mesh 552
+#python3 footing_mengqi.py -numg_net 3114 -num_mesh 552
 
-#python3 footing_tongming.py -numg_net 254 -num_mesh 1206
-#python3 footing_tongming.py -numg_net 480 -num_mesh 1206
-#python3 footing_tongming.py -numg_net 3114 -num_mesh 1206
+#python3 footing_mengqi.py -numg_net 254 -num_mesh 1206
+#python3 footing_mengqi.py -numg_net 480 -num_mesh 1206
+#python3 footing_mengqi.py -numg_net 3114 -num_mesh 1206
 
 # footing ratio sampling
-#python3 footing_tongming.py -numg_net 3114 -num_mesh 1206 -ratio 0.1 -integration_order 1
-#python3 footing_tongming.py -numg_net 3114 -num_mesh 1206 -ratio 1.0 -integration_order 1
+#python3 footing_mengqi.py -numg_net 3114 -num_mesh 1206 -ratio 0.1 -integration_order 1
+#python3 footing_mengqi.py -numg_net 3114 -num_mesh 1206 -ratio 1.0 -integration_order 1
 
 # active learning
 python3 footing_tongming.py -numg_net 3114 -num_mesh 1206 -ratio 1.0 -integration_order 1 -active_flag 1 -active_iter 4

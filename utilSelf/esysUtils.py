@@ -58,6 +58,24 @@ def boudaryCondition_3d(nx_, nx, ny_, ny,
     return q, r, y
 
 
+
+def boudaryCondition_3d_PBC(nx_, nx, ny_, ny,
+        nz_, nz, fx_, fx, fy_, fy, where_confining, vel, out_normal, confining=1e5):
+    y= Data()
+    q = nx_ * [0, 1, 0] + nx * [0, 1, 0]\
+        +ny_ * [0, 1, 0] + ny * [0, 1, 0]\
+        + nz_ * [1, 1, 1] + nz * [1, 1, 1]
+
+    r = ny_ * [0, 0, 0] + ny * [0, 0, 0]\
+        +nz_ * [0, 0, 0] + nz * [0, 0, -vel]
+
+
+    y = fx_*[confining, 0, 0]+fx*[-confining, 0, 0]
+    return q, r, y
+
+
+
+
 def force_length_calculation(sig, domain, where):
     proj = Projector(domain)
     sig_ = proj(sig)
@@ -80,7 +98,7 @@ def get_veps_seps(strain, domain):
 
 def get_boundary_u_traction(domain):
     x = domain.getX()  # nodal coordinate
-    bx = FunctionOnBoundary(domain).getX()
+    bx = FunctionOnBoundary(domain).getX()  #边界插点
     fx_ = whereZero(bx[0] - inf(bx[0]))
     fx = whereZero(bx[0] - sup(bx[0]))
     fy_ = whereZero(bx[1]-inf(bx[1]))
@@ -130,6 +148,26 @@ def boundary_explicit_2D_footing(domain, du, q, load_width, map_flag=True):
     else:
         du_boundary = [0, du]*q
     return du_boundary
+
+
+def boudary_explicit_2D_hole_plate(domain, du, q, mapFlag=True):
+    """
+    uSolution: the displacement domain
+    u: the displacement at current step
+    q: the mask of the displacement (where the displacement is applied)
+    mapFlag: use map method or not (default: True)
+    """
+    x = domain.getX()
+    if mapFlag:
+        l = sup(x[0])-inf(x[0])
+        q_map = x[0]/l
+        du_boundary = [du, 0]*q_map
+    else:
+        du_boundary = [du, 0]*q
+    return du_boundary
+
+
+
 
 
 def plot_model(domain, order, integration_order, save_path=None):

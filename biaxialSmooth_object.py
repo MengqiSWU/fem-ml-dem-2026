@@ -19,46 +19,95 @@ useMPI = False
 explicitFlag = False
 # loadingPath = 'pressureBiax'  # 'biaxial' 'confinedCompression' 'gaussianConfinedPressure' 'pressureBiax'
 smoothFlag = False
-mode = 'dem'  # 'ml' 'dem' 'elastic' 'vonmises' 'vonmisesml' 'vonmisessemi' 'mcc' 'mldem'
 numRandom = 0
-nump = 16  # number of processes in multiprocessing
+nump = 10  # number of processes in multiprocessing
 confining = p0 = 1.e5  # confining pressure
 lx = 0.5
 ly = 1.0  # sample size, 50mm by 100mm
-axialStrain = 0.10
-loadStep = 100
-vel = axialStrain*ly/loadStep
-# loadStep = int(abs(ly * axialStrain / vel)) + 1
-vel_list = [vel] * loadStep
+axialStrain = 0.06
+loadStep = 80
+#vel = axialStrain*ly/loadStep
+# vel_list = [vel] * loadStep  # original loading
+
+
+# # loadStep = int(abs(ly * axialStrain / vel)) + 1
+
+# reversal loading
+# vel = 0.001
+# vel_ld= [vel] * 15
+# vel_unld= [-vel] * 10
+# vel_reld= [vel] * 55
+
+# reversal loading2
+vel = 0.001
+vel_ld= [vel] * 12
+vel_unld= [-vel] * 8
+vel_reld= [vel] * 30
+
+# reversal loading2
+# vel = 0.001
+# vel_ld= [vel] * 10
+# vel_unld= [-vel] * 8
+# vel_reld= [vel] * 32
+
+# Mono loading2
+# vel = 0.001
+# vel_ld= [vel] * 12
+# vel_unld= [-vel] * 8
+# vel_reld= [vel] * 14
+#
+vel_list = vel_ld + vel_unld + vel_reld
+
+
+
+mode = 'dem'  # 'ml' 'dem' 'elastic' 'vonmises' 'vonmisesml' 'vonmisessemi' 'mcc' 'mldem'
+active_iter = None
+NN_sig_path = 'X_epsAND3f_Y_sig_ddd14_Fourier_noRotate_FEM_DEM_sig'
+NN_D_path = 'X_epsAND3f_Y_D_ddd14_Fourier_noRotate_FEM_DEM_D'
+
+
 
 # --------------------------Mesh size----------------------------
 mesh_number = 2
 nx, ny = mesh_number, mesh_number * 2  # sample discretization, 8 by 16 quadrilateral elements
-order = 2
+order = 1
 
-#mesh_name = 'biaxial_0.05_548'
-#mydomain = ReadGmsh('./meshes/biaxial_msh/%s.msh' % mesh_name, numDim=2,
-#                    order=1, integrationOrder=1)
+# mesh_name = 'biaxial_0.1_162'
+# mydomain = ReadGmsh('./meshes/biaxial_msh/%s.msh' % mesh_name, numDim=2,
+#                    order=1, integrationOrder=2)
+
+#
 mydomain = Rectangle(l0=lx, l1=ly, n0=nx, n1=ny,
                      order=1, integrationOrder=2)
+
 rtol = 1e-2
 numg = len(Vector(0, Function(mydomain)).toListOfTuples())
 
-# material properties
+# material properties #remember to change the path in different simulation cases
 p0, e0, ocr, E, poisson, lam, G, rho, nn_name, kwargs = \
     explicit_material_constants(
-        p0=confining, nn_name=None,
+        p0=confining,
+        # nn_name=NN_sig_path,
+        # nn_name_D=NN_D_path,
+        # active_iter = active_iter,
+        nn_name=None,
         # csuh_para_line=None,
     )
 
+
 # create the simulation directory
-out_directory = '../simu/biaxial'
+out_directory = '../simu/biaxial_Reld'
 check_mkdir(out_directory)
 
+# remember to change the loading path
 loadInfor = get_load_information(
     out_directory=out_directory, test_name='biax', mode=mode, smooth_flag=smoothFlag, explicit_flag=explicitFlag,
       nx=nx, ny=ny, order=order, numg=numg, **kwargs)
 kwargs['save_path'] = loadInfor
+
+# loadInfor= loadInfor + '_Reld_St15_modified_H'
+loadInfor= loadInfor + '_Reld_St12_2H'
+# loadInfor= loadInfor + '_Mono_2H'
 
 check_mkdir(
     loadInfor,
@@ -67,11 +116,10 @@ check_mkdir(
     os.path.join(loadInfor, 'iteration_packing')
 )
 
-cons = getCons(mode, numg=numg, nump=nump, explicitFlag=explicitFlag, **kwargs)
-prob = ImplicitSolver(
-    domain=mydomain, cons=cons,
-    loadInfor=loadInfor,
-    save_loading_flag=True if mode == 'dem' else False)
+cons = getCons(mode, numg=numg, pool=None, nump=nump, explicitFlag=explicitFlag, **kwargs)
+
+prob = ImplicitSolver(domain=mydomain, cons=cons, loadInfor=loadInfor,
+    save_loading_flag=True if mode == 'dem' or 'mldem' else False)
 
 
 echo(
@@ -113,7 +161,7 @@ while t < t_total:  # apply 100 load steps
         confining=confining, smoothFlag=smoothFlag, vel=vel_list[t])
     prob.initialize(Y=Y, y=y, q=q, r=r)
 
-    prob.solve(iter_max=15, t=t)  # get solution: nod\n\nal displacement
+    prob.solve(iter_max=20, t=t)  # get solution: nod\n\nal displacement
     disp = prob.u
     stress = prob.sig
     yLength = np.sum((prob.domain.getX()[1] * ny).toListOfTuples()) / np.sum(ny.toListOfTuples())
@@ -135,3 +183,4 @@ fout = open(os.path.join(loadInfor, 'biaxial_surf.dat'), 'a')
 fout.write("#Elapsed time in hours: " + str(time_elapse / 3600.) + '\n')
 fout.close()
 #pool.close()
+

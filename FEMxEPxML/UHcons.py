@@ -7,15 +7,17 @@ from utilSelf.general import echo, mapMask
 
 
 class uhConstitutive(ConstitutiveMask):
-    def __init__(self, explicitFlag, numg, pool: multiprocessing.Pool,save_path, rho,
-                 p0=1e5, e0=1.3513020248916077, theta_degree=30, lambdaa=0.135, kappa=0.01, ocr=1.2, # 0.04
+    def __init__(self, explicitFlag, numg, save_path, rho,
+                 p0=1e5, e0=1.3513020248916077, theta_degree=30, lambdaa=0.135, kappa=0.01, ocr=1.2,  # 0.04
                  poisson=0.3, N=1.973,
-                 verboseFlag=False, ndim=3):
+                 verboseFlag=False, ndim=3, nump=1):
+        #改进后的调用多进程不用pool: multiprocessing.Pool
         self.cons = [
             uh_single(p0=p0, e0=e0, ocr=ocr, lambdaa=lambdaa, kappa=kappa,
-                        poisson=poisson, N=N,  verboseFlag=verboseFlag, theta_degree=theta_degree,
-                        explicitFlag=explicitFlag) for _ in range(numg)]
-        ConstitutiveMask.__init__(self, save_path=save_path, p0=p0, cons=self.cons, pool=pool, ndim=ndim, explicitFlag=explicitFlag,
+                      poisson=poisson, N=N, verboseFlag=verboseFlag, theta_degree=theta_degree,
+                      explicitFlag=explicitFlag) for _ in range(numg)]
+        ConstitutiveMask.__init__(self, save_path=save_path, p0=p0, cons=self.cons, nump=nump, ndim=ndim,
+                                  explicitFlag=explicitFlag,
                                   numg=numg, rho=rho)
 
 

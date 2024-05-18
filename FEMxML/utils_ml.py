@@ -58,7 +58,7 @@ def get_data(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False, a
         for rootfile in root_path_list:
             indexList.append(getGaussianPointsIndex(filePath=rootfile))
 
-    stress, strain, fabric, strain_increment, tangent, strain_abs, stress_last = [], [], [], [], [], [], []
+    stress, strain, fabric, strain_increment, tangent, strain_abs, stress_last, H_3F = [], [], [], [], [], [], [], []
     H_0, H_1 = [], []
     for file in file_list:
         f = open(file, 'r')
@@ -118,6 +118,10 @@ def get_data(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False, a
             elif temp == 'H_1':
                 H_1 += (blockDataReader(datas[i + 1:i + n + 1]))
                 i += (n + 1)
+            elif temp == 'H_3F':
+                H_3F += (blockDataReader(datas[i + 1:i + n + 1]))
+                i += (n + 1)
+
 
             else:
                 i += 1
@@ -135,6 +139,7 @@ def get_data(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False, a
     stress_last = np.array(stress_last).reshape([-1, 4])
     stress_last = np.delete(stress_last, [1], axis=1)
     H_0, H_1 = np.array(H_0), np.array(H_1)
+    H_3F = np.array(H_3F)
 
     # add the initial state to the dataset
     # strain = np.concatenate((strain, np.array([[0.,0.,0.] for _ in range(n)])), axis=0)
@@ -144,6 +149,7 @@ def get_data(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False, a
     returned_dict = {
         'sig': stress, 'eps': strain,
         'eps_abs':strain_abs,
+        'H_3F' : H_3F
     }
     if len(stress_last)!=0:
         returned_dict['sig_last'] = stress_last
@@ -158,7 +164,7 @@ def get_data(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False, a
 def reconstruct_x_y(
         input_features, output_features,
         eps, sig,
-        tangent=None, eps_abs=None, sig_last=None, rotate_flag=False, H_0=None, H_1=None):
+        tangent=None, eps_abs=None, sig_last=None, rotate_flag=False, H_0=None, H_1=None, H_3F=None):
     if rotate_flag:
         eps = xy_exchange_glue(eps)
         sig = xy_exchange_glue(sig)
@@ -168,10 +174,14 @@ def reconstruct_x_y(
         input_value = np.concatenate((eps, eps_abs[..., 2:3]), axis=-1)
     elif input_features == 'epsANDabsxy':
         input_value = np.concatenate((eps, eps_abs[..., 0:1], eps_abs[..., 2:3]), axis=-1)
+    elif input_features == 'epsANDabsxyz':
+        input_value = np.concatenate((eps, eps_abs[..., 0:1], eps_abs[..., 1:2], eps_abs[..., 2:3]), axis=-1)
     elif input_features == 'epsANDabsxyq':
         input_value = np.concatenate((eps, eps_abs[..., 0:1], eps_abs[..., 2:3], get_q_2d(sig_last)), axis=-1)
     elif input_features == 'epsANDabs':
         input_value = np.concatenate((eps, eps_abs), axis=-1)
+    elif input_features == 'epsAND3f':
+        input_value = np.concatenate((eps, H_3F), axis = -1)
     elif input_features == 'epsANDsiglast':
         input_value = np.concatenate((eps, sig_last), axis=-1)
     elif input_features == 'epsANDplast':
@@ -459,7 +469,7 @@ def transform_data_in_blocks_2_series(datas: np.ndarray, numg: int):
 
 
 def get_data_series(
-        root_path_list, numg, maxTime=100, mixflag=False, series_flag=False, explicit_flag=False, add_flag=False):
+        root_path_list, numg, maxTime=100, mixflag=False, series_flag=False, explicit_flag=False, add_flag=True):
     '''
         series_flag used to ONLY read the converged results in the implicit datasets
     '''

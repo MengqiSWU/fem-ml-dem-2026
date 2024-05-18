@@ -22,10 +22,12 @@ class ImplicitSolver(escriptSolver):
         u = self.pde.getSolution()
         self.pde.setValue(r=Data())  # set the displacement to 0, after the 1st solution
         deps = symmetric(grad(u))
+        # sig_data, D_data, scenes, H_data = self.stressSolver(deps=deps)
         sig_data, D_data, scenes = self.stressSolver(deps=deps)
         iterate = 0
         if self.save_loading_flag:
-            self.save_loading_mask(t=t, sig_data=sig_data, D_data=D_data, u_grad=deps, iterate=iterate)
+            # self.save_loading_mask(t=t, sig_data=sig_data, D_data=D_data, u_grad=deps, iterate=iterate)
+            self.save_loading_mask(t=t, sig_data=sig_data, D_data=D_data, u_grad=deps, scenes=scenes, iterate=iterate)
         end_flag = False
         while True:
             self.domain.setX(x_safe+u)
@@ -58,21 +60,29 @@ class ImplicitSolver(escriptSolver):
             u += du
             deps = symmetric(grad(u))
             sig_data, D_data, scenes = self.stressSolver(deps=deps)
-            if self.save_loading_flag:
-                self.save_loading_mask(t=t, sig_data=sig_data, D_data=D_data, u_grad=deps, iterate=iterate)
             iterate += 1
+            if self.save_loading_flag:
+                # self.save_loading_mask(t=t, sig_data=sig_data, D_data=D_data, u_grad=deps, iterate=iterate)
+                self.save_loading_mask(t=t, sig_data=sig_data, D_data=D_data, u_grad=deps, scenes=scenes, iterate=iterate)
+
 
         self.u += u
         self.sig, self.D = sig_data, D_data
         self.eps += deps
         self.eps_abs += deps*sign(deps)
+        # self.H_3f = self.setHistVector(scenes[2])
         self.volume = self.volume*(1+trace(deps))
         self.updateCons(scenes=scenes)
 
-    def save_loading_mask(self, t, sig_data, D_data, u_grad, iterate=None):
+    def save_loading_mask(self, t, sig_data, D_data, u_grad, scenes, iterate=None):
         save_dict = {
-            'sig': sig_data, 'D': D_data,
-            'eps': self.eps + symmetric(u_grad), 'eps_abs': self.eps_abs, 'sig_last': self.sig}
+            'sig': sig_data,
+            'D': D_data,
+            'eps': self.eps + symmetric(u_grad),
+            'eps_abs': self.eps_abs + u_grad*sign(u_grad),
+            'H_3F': self.setHistVector(scenes[2]),
+            'sig_last': self.sig
+        }
         save_loading(save_path=self.savePath, t=t, iter=iterate,  **save_dict)
 
 

@@ -31,6 +31,9 @@ class escriptSolver:
             self.pde.setSymmetryOn()
         self.eps = Tensor(0, Function(self.domain))
         self.eps_abs = Tensor(0., Function(self.domain))
+        # self.eps_last = Tensor(0, Function(self.domain))
+        self.H_3d = Data(np.zeros((3,)), Function(self.domain))
+        # self.H_3f = Data(np.zeros((2,)), Function(self.domain))
         self.numG = len(self.eps.toListOfTuples())
         self.sig = self.setStressTensor(
             sig = -self.cons.sig[:, :self.ndim, :self.ndim])
@@ -80,7 +83,38 @@ class escriptSolver:
                 D.setValueOfDataPoint(i, Dep[i])
         return D
 
+    def setHistVector(self, Hist):
+        H_3f = Data(np.zeros((2,)), Function(self.domain))
+        for i in range(self.numG):
+            H_3f.setValueOfDataPoint(i, Hist[i])
+        return H_3f
+
+    def setHistVector_3D(self, Hist):
+        H_his = Data(np.zeros((3,)), Function(self.domain))
+        for i in range(self.numG):
+            H_his.setValueOfDataPoint(i, Hist[i])
+        return H_his
+
+
     def stressSolver(self, deps):
+        # NOTE: in geo-mechanical, compression is positive while stretching is negative
+        deps = -np.array(deps.toListOfTuples())
+        if self.explicitFlag:
+            if self.cons.name == '2ml' or self.cons.name == 'mixed':
+                sig_geo, sig_err = self.cons.solver(deps)
+                return self.setStressTensor(-sig_geo), self.setStressTensor(sig_err)
+            else:
+                sig_geo = self.cons.solver(deps)
+                return self.setStressTensor(-sig_geo)
+        else:
+            # sig_geo, D, scenes, hist_varibles = self.cons.solver(deps)
+            # return self.setStressTensor(-sig_geo), self.setMaterialMatrix(Dep=D), scenes, self.setHistVector(Hist=hist_varibles)
+            sig_geo, D, scenes = self.cons.solver(deps)
+            return self.setStressTensor(-sig_geo), self.setMaterialMatrix(Dep=D), scenes
+
+
+
+    def stressSolver_3d(self, deps):
         # NOTE: in geo-mechanical, compression is positive while stretching is negative
         deps = -np.array(deps.toListOfTuples())
         if self.explicitFlag:
@@ -94,7 +128,24 @@ class escriptSolver:
             sig_geo, D, scenes = self.cons.solver(deps)
             return self.setStressTensor(-sig_geo), self.setMaterialMatrix(Dep=D), scenes
 
-    def updateCons(self, scenes):
+
+
+    def stressSolver_3d_accum(self, deps):
+        # NOTE: in geo-mechanical, compression is positive while stretching is negative
+        deps = -np.array(deps.toListOfTuples())
+        # d_deps = np.array(d_deps.toListOfTuples())
+        if self.explicitFlag:
+            if self.cons.name == '2ml' or self.cons.name == 'mixed':
+                sig_geo, sig_err = self.cons.solver(deps)
+                return self.setStressTensor(-sig_geo), self.setStressTensor(sig_err)
+            else:
+                sig_geo = self.cons.solver(deps)
+                return self.setStressTensor(-sig_geo)
+        else:
+            sig_geo, D, Scene_data = self.cons.solver(deps)
+            return self.setStressTensor(-sig_geo), self.setMaterialMatrix(Dep=D), Scene_data
+
+    def updateCons(self, s_data):
         '''
             https://stackoverflow.com/questions/53878553/why-multiprocessing-pool-cannot-change-global-variable
 
@@ -107,10 +158,10 @@ class escriptSolver:
         # param = list(zip([self.cons[i].update for i in range(self.numG)], scenes))
         # self.pool.map(updateMask, param)
         if type(self.cons) is not list:
-            self.cons.update(scenes)
+            self.cons.update(s_data)
         else:
             for i in range(self.numG):
-                self.cons[i].update(*scenes[i])
+                self.cons[i].update(*s_data[i])
 
     def returnedDatasDecode(self, datas):
         sig_geo = []

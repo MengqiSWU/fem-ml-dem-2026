@@ -6,13 +6,13 @@ from utilSelf.saveGauss import save_loading
 
 
 class ConstitutiveMask:
-    def __init__(self, p0, ndim, explicitFlag, numg, save_path: str,
-                 cons=None, pool=None, name='general', save_flag=False, rho=2650.):
+    def __init__(self, p0, ndim, explicitFlag, numg, save_path: str, nump: int,
+                 cons=None, name='general', save_flag=False, rho=2650.):  # pool=None, 改进后的调用多进程不用pool
         '''
             Caution: in geo-mechanics, compression is positive (opposite to the general mechanics)
         '''
         self.p0 = p0
-        self.pool = pool
+        self.nump = nump
         self.ndim = ndim
         self.explicitFlag = explicitFlag
         self.save_flag = save_flag
@@ -104,23 +104,71 @@ class ConstitutiveMask:
         return
 
 class constitutiveSingle:
-    def __init__(self, p0: float, ndim: int):
+    def __init__(self, p0: float, ndim: int, explicitFlag=True):
         self.p0 = p0
         self.sig = np.eye(3)*self.p0
         self.eps = np.zeros(shape=[3, 3])
+        self.eps_s = 0.
         self.eps_p = np.zeros(shape=[3, 3])
+        self.epsvp = 0.
         self.ndim = ndim
         self.eps_abs = np.zeros(shape=[3, 3])
+        self.p, self.q = self.p0, 0.
+        self.explicitFlag = explicitFlag
 
     def update(self, sig, eps, eps_abs, internals):
         self.sig = sig
         self.eps = eps
         self.eps_abs = eps_abs
         self.update_internal(*internals)
+        # self.eps_s = getQEps(eps)  # shear strain
 
     def dsigCal(self, D, deps):
         dsig = np.einsum('ijkl, kl->ij', D, deps)
         return dsig
+
+    def prediction(self, deps_numg):
+        '''
+        :param deps_numg: shape of (numg, steps, ndim, dim)
+        :return:
+        '''
+        sig_numg = []
+        for deps in deps_numg:
+            sig_pre = []
+            for num, i in enumerate(deps):
+                sig_temp, scenes_temp = self.solver(deps=-tensor2d_to_3d_single(tensor2d=i))
+                sig_pre.append(-sig_temp[:2, :2])
+                self.update(*scenes_temp)
+            self.return2initial()
+            sig_numg.append(sig_pre)
+        prediction = np.array(sig_numg)
+        return prediction
+
+    def solver(self, deps):
+        deps_norm = np.linalg.norm(deps)
+        step_num = int(deps_norm / 0.0002*5.) + 1  # 0.0002=2e-4 but we find in the calculation 4e-5 should be better
+        if step_num < 1:
+            step_num = 1
+        step_size = 1. / step_num
+        remain, split_num = 1.0, 0
+        scece_safe = self.get_current_scene()
+        while remain > 0. and split_num < 10:
+            if self.explicitFlag:
+                sig, scene = self.solver_single(deps=deps * step_size)
+            else:
+                sig, D, scene = self.solver_single(deps=deps * step_size)
+            remain -= step_size
+            self.update(*scene)
+        if remain == 1.0:
+            # raise
+            sig, scene = scece_safe[0], scece_safe
+            if not self.explicitFlag:
+                D = self.De * 0.1
+        self.update(*scece_safe)
+        if self.explicitFlag:
+            return sig, scene
+        else:
+            return sig, D, scene
 
     def yieldFunction(self):
         pass
@@ -144,4 +192,13 @@ class constitutiveSingle:
         pass
 
     def update_internal(self, internals):
+        pass
+
+    def get_current_scene(self, ):
+        pass
+
+    def solver_single(self):
+        pass
+
+    def return2initial(self):
         pass

@@ -4,24 +4,70 @@ from yadeimport import *
 from utilSelf.general import echo
 import numpy as np
 
-# --------------- parameters in lwj's paper ---------------
-#confining = 20e3 # 20 kPa
-#O.materials.append(FrictMat(young=8e8, poisson=0.5, frictionAngle=0./180*np.pi))
-#fric = np.tan(23 / 180 * np.pi)
-#fname = os.path.join(os.getcwd(), 'p_2e4.yade.gz')
 
 # --------------- parameters in Guoning's paper ---------------
-confining = 100e3  # 100 kPa
+
+
+# --------------- biaixal ---------------
+confining = 100e3  #for biaixal
+fric = 0.5    #for biaixal
+poisson=0.8
+# particle num=400
+young=6.e8
+
+
+# adjust to
+# young=5.e8
+# fric = 0.4
+# --------------- biaixal ---------------
+#
+
+# --------------- footing ---------------
+# particle num=400   #Final
+
+# confining = 20e3
+# confining = 60e3
+# confining = 100e3
+# confining = 60e3  #Final
+
+
+# fric = np.tan(23 / 180 * np.pi)   #for footing
+# fric = 0.7
+# fric = 1.0
+# fric = 0.5
+# fric = 0.2
+# fric = 0.1
+# fric = 0.15   #Final
+# fric = 0.35
+
+
+# poisson=0.2  #Final
+# poisson=0.2
+
+
+# young=6.e8
+# young=2.e7   # vonmises too small
+# young=1.e8   # 可以尝试一下更多的load step，目前只有50 step
+# young=2.e8    # 可以尝试一下更多的load step，目前只有50 step
+# young=2.5e8
+# young=3.e8   #Final
+# --------------- footing ---------------
+
+
+
+
 O.materials.append(FrictMat(young=6.e8, poisson=0.8, frictionAngle=0./180*np.pi))
-fric = 0.5
-fname = os.path.join(os.getcwd(), 'p_1e5_600.yade.gz')
+fname = os.path.join(os.getcwd(), 'p_1e5_400.yade.gz')         #final for biaxial
+# fname = os.path.join(os.getcwd(), 'p_6e4_400.yade.gz')    #final for footing
+# fname = os.path.join(os.getcwd(), 'p_5e4_1000.yade.gz')
+# fname = os.path.join(os.getcwd(), 'p_2e4_400.yade.gz')
 
 # --------------- parameters for the cohesive materials -------
 # O.materials.append(CohFrictMat(young=6.e8, poisson=.8, frictionAngle=.0, ))
 
 sp = pack.SpherePack()
 size = .24
-sp.makeCloud(minCorner=(0, 0, .05), maxCorner=(size, size, .05), rMean=.005, rRelFuzz=.4, num=600, periodic=True,
+sp.makeCloud(minCorner=(0, 0, .05), maxCorner=(size, size, .05), rMean=.005, rRelFuzz=.4, num=400, periodic=True,
              seed=1)
 sp.toSimulation()
 O.cell.hSize = Matrix3(size, 0, 0, 0, size, 0, 0, 0, .1)
