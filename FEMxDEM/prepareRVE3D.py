@@ -267,6 +267,7 @@ import numpy as np
 # fric = 0.4
 # rMean=.01
 # num=600
+# rRelFuzz=.4
 # seed=123       #for 3D
 
 
@@ -276,6 +277,7 @@ import numpy as np
 # poisson = .2
 # fric = 0.3
 # rMean=.01
+# rRelFuzz=.4
 # num=600
 # seed=30       #for 3D
 
@@ -504,15 +506,7 @@ import numpy as np
 
 
 #
-# confining = 100e3
-# size = .24
-# young = 4.e8
-# poisson = .3
-# fric = 0.5
-# rMean=.01
-# num=1000
-# rRelFuzz=.5
-# seed=1       #for 3D  mass=2700
+
 
 
 
@@ -558,7 +552,7 @@ import numpy as np
 # fric = 0.5
 # rMean=.01
 # rRelFuzz=.4
-# num=600
+# num=700
 # seed=1       #for 3D with rotation # mass=2700
 
 
@@ -578,6 +572,57 @@ import numpy as np
 
 
 
+
+# confining = 100e3
+# size = .24
+# young = 3.e8
+# poisson = .3
+# fric = 0.5
+# rMean=.01
+# rRelFuzz=.5
+# seed=123    #for 3D  # density=2700 no num
+
+
+# confining = 100e3
+# size = .24
+# young = 4.e8
+# poisson = .3
+# fric = 0.5
+# rMean=.01
+# num=1000
+# rRelFuzz=.5
+# seed=1       #for 3D  mass=2650  also used
+
+
+
+
+confining = 100e3
+size = .24
+young = 3.e8
+poisson = .3
+fric = 0.5
+rMean=.01
+num=1000
+rRelFuzz=.5
+seed=15       #for 3D  # density=2650  Final use to generate data (5*5*10)
+
+
+# confining = 100e3
+# size = .24
+# young = 4.e8
+# poisson = .2
+# fric = 0.5
+# rMean=.01
+# rRelFuzz=.4
+# num=600
+# seed=123      #for 3D mass=2700 used for generate contrast
+
+
+
+
+
+
+
 # confining = 100e3
 # size = .24
 # young = 6.e8
@@ -586,53 +631,17 @@ import numpy as np
 # rMean=.007
 # rRelFuzz=.4
 # num=1000
-# seed=1                 #for 3D_1000_mass=2700
-
-
-
-
-
-# confining = 100e3
-# size = .24
-# young = 6.e8
-# poisson = .2
-# fric = 0.3
-# rMean=.01
-# rRelFuzz=.4
-# seed=7    #for 3D  # density=2700 no num
-
-
-
-
-# confining = 100e3
-# size = .24
-# young = 3.e8
-# poisson = .3
-# fric = 0.5
-# rMean=.01
-# num=1000
-# rRelFuzz=.5
-# seed=15       #for 3D  # density=2650  Final use
-
-
-confining = 100e3
-size = .24
-young = 6.e8
-poisson = .3
-fric = 0.5
-rMean=.007
-rRelFuzz=.4
-num=1000
-seed=1     #for 3D with rotation # mass=2700
+# seed=1     #for 3D with rotation # mass=2700
 
 #
 
 
 
-O.materials.append(FrictMat(young = young, poisson = poisson, frictionAngle=.0, density=2700))   #
+O.materials.append(FrictMat(young = young, poisson = poisson, frictionAngle=.0, density=2650))   #
 sp = pack.SpherePack()
-sp.makeCloud(minCorner=(0, 0, 0), maxCorner=(size, size, size), rMean = rMean, rRelFuzz=rRelFuzz,num = num,
-             periodic=True,seed=seed)   #
+sp.makeCloud(minCorner=(0, 0, 0), maxCorner=(size, size, size), rMean = rMean, rRelFuzz=rRelFuzz,num = num, periodic=True,seed=seed)
+# sp.makeCloud(minCorner=(0, 0, 0), maxCorner=(size, size, size), rMean = rMean, rRelFuzz=rRelFuzz, periodic=True,seed=seed)
+
 sp.toSimulation()
 O.cell.hSize = Matrix3(size, 0, 0, 0, size, 0, 0, 0, size)
 print(len(O.bodies))
@@ -642,7 +651,7 @@ print(len(O.bodies))
 # p.state.inertia
 #
 for p in O.bodies:
-    p.state.mass = 2700 * 1.333 * pi * p.shape.radius * p.shape.radius ** 2
+    p.state.mass = 2650 * 1.333 * pi * p.shape.radius * p.shape.radius ** 2
     # p.state.blockedDOFs = 'ZXY'
     inertia = 0.4 * p.state.mass * p.shape.radius ** 2
     p.state.inertia = (inertia, inertia, inertia)

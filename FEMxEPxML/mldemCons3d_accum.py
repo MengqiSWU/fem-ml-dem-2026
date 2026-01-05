@@ -20,8 +20,10 @@ class MlDemConstitutive(ConstitutiveMask):
         self.eps = np.zeros([self.numg, self.voigt_len])
         self.eps_abs = np.zeros([self.numg, self.voigt_len])
         self.H_3D = np.zeros([self.numg, 3])
-        self.sig_vector = np.array([[-p0, -1000, -1000, -p0, -1000, -p0] for _ in range(self.numg)])
+
+        # self.sig_vector = np.array([[-p0, -500, 500, -p0, 500, -p0] for _ in range(self.numg)])
         # self.sig_vector = np.array([[-p0, 0, 0, -p0, 0, -p0] for _ in range(self.numg)])
+        self.sig_vector = np.array([[-p0, 1000, 1000, -p0, 1000, -p0] for _ in range(self.numg)])
         self.input_features = input_features
 
         self.initLoad = initLoad3D
@@ -30,23 +32,23 @@ class MlDemConstitutive(ConstitutiveMask):
         self.sig = np.zeros([self.numg, self.ndim, self.ndim])
         self.D = np.zeros([self.numg, self.ndim, self.ndim, self.ndim, self.ndim])
 
-        with Pool(processes=self.nump) as pool:
-            self.scenes = pool.map(self.initLoad, list(range(self.numg)))
-            st = pool.map(self.getStressAndTangent, self.scenes)
-        for i in range(self.numg):
-        # Caution: all of the sig and eps saved in the Cons are in geo-mechanical form
-            self.sig[i] = -np.array(st[i][0])
-            self.D[i] = np.array(st[i][1])
+        # with Pool(processes=self.nump) as pool:
+        #     self.scenes = pool.map(self.initLoad, list(range(self.numg)))
+        #     st = pool.map(self.getStressAndTangent, self.scenes)
+        # for i in range(self.numg):
+        # # Caution: all of the sig and eps saved in the Cons are in geo-mechanical form
+        #     self.sig[i] = -np.array(st[i][0])
+        #     self.D[i] = np.array(st[i][1])
 
 
 
-        #
-        # if 'epsANDH' in self.input_features or 'epsANDqH' in self.input_features or self.input_features=='epsANDpqH':
-        #     self.H = np.array([H_initial]*self.numg).reshape([self.numg, 1])
-        # if self.explicitFlag:
-        #     self.sig = self.solver(deps=np.zeros([self.numg, self.ndim, self.ndim]))
-        # else:
-        #     self.sig, self.D, _ = self.solver(deps=np.zeros([self.numg, self.ndim, self.ndim]))
+
+        if 'epsANDH' in self.input_features or 'epsANDqH' in self.input_features or self.input_features=='epsANDpqH':
+            self.H = np.array([H_initial]*self.numg).reshape([self.numg, 1])
+        if self.explicitFlag:
+            self.sig = self.solver(deps=np.zeros([self.numg, self.ndim, self.ndim]))
+        else:
+            self.sig, self.D, _ = self.solver(deps=np.zeros([self.numg, self.ndim, self.ndim]))
 
     def solver(self, deps):
         '''

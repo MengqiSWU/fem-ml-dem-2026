@@ -145,7 +145,26 @@ class escriptSolver:
             sig_geo, D, Scene_data = self.cons.solver(deps)
             return self.setStressTensor(-sig_geo), self.setMaterialMatrix(Dep=D), Scene_data
 
-    def updateCons(self, s_data):
+    # def updateCons(self, s_data):
+    #     '''
+    #         https://stackoverflow.com/questions/53878553/why-multiprocessing-pool-cannot-change-global-variable
+    #
+    #         Because you are using multiprocessing.Pool your program runs in multiple processes. Each process has
+    #          its own copy of the global variable, each process modifies its own copy of the global variable, and
+    #          when the work is finished each process is terminated. The master process never modified its copy of
+    #          the global variable.
+    #     '''
+    #     # so we can not use the multiprocess to renew the state of the cons
+    #     # param = list(zip([self.cons[i].update for i in range(self.numG)], scenes))
+    #     # self.pool.map(updateMask, param)
+    #     if type(self.cons) is not list:
+    #         self.cons.update(s_data)
+    #     else:
+    #         for i in range(self.numG):
+    #             self.cons[i].update(*s_data[i])
+
+
+    def updateCons(self, scenes):
         '''
             https://stackoverflow.com/questions/53878553/why-multiprocessing-pool-cannot-change-global-variable
 
@@ -158,10 +177,10 @@ class escriptSolver:
         # param = list(zip([self.cons[i].update for i in range(self.numG)], scenes))
         # self.pool.map(updateMask, param)
         if type(self.cons) is not list:
-            self.cons.update(s_data)
+            self.cons.update(scenes)
         else:
             for i in range(self.numG):
-                self.cons[i].update(*s_data[i])
+                self.cons[i].update(*scenes[i])
 
     def returnedDatasDecode(self, datas):
         sig_geo = []

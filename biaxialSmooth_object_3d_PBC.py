@@ -28,7 +28,7 @@ lx = 0.5
 ly = 0.5
 lz = 1.0
 dim = 3   # sample dimension
-num_mesh = 5
+num_mesh = 9
 nx, ny, nz = num_mesh, num_mesh, num_mesh * 2
 order = 1
 mydomain = Brick(l0=lx, l1=ly, l2=lz, n0=nx, n1=ny, n2=nz, order=order,
@@ -73,11 +73,11 @@ vel_list = vel_ld1 + vel_unld + vel_reld1 + vel_reld   # one circle
 rtol = 1e-2
 
 # ---------------------------Cons model-------------------------------------
-mode = 'dem3d'  # 'mcc' 'net' 'dem' 'dem3d' 'csuh' 'mises' 'lade' 'uh' 'norsand'
+mode = 'csuh'  # 'dem3d''mcc' 'net' 'dem' 'dem3d' 'csuh' 'mises' 'lade' 'uh' 'norsand'
 active_iter = None
-
-NN_sig_path = 'X_epsAND3d_Y_sig_dddd20_Fourier_noRotate_FEM_DEM_sig'
-NN_D_path = 'X_epsAND3d_Y_D_dddd20_Fourier_noRotate_FEM_DEM_D'
+#
+# NN_sig_path = 'X_epsAND3d_Y_sig_dddd20_Fourier_noRotate_FEM_DEM_sig'
+# NN_D_path = 'X_epsAND3d_Y_D_dddd20_Fourier_noRotate_FEM_DEM_D'
 
 
 
@@ -134,6 +134,7 @@ loadInfor = get_load_information(
       nx=nx, ny=ny, order=order, numg=numg, **kwargs)
 
 
+loadInfor += '_Y3e8_fri0.5_p0.3_rM01_n1000_nodenser_accum_rotation'
 loadInfor += '_Y3e8_fri0.5_p0.3_rM01_n1000_nodenser_accum_rotation'
 kwargs['save_path'] = loadInfor
 

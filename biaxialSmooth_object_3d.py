@@ -28,7 +28,7 @@ lx = 0.5
 ly = 0.5
 lz = 1.0
 dim = 3   # sample dimension
-num_mesh = 7
+num_mesh = 5
 nx, ny, nz = num_mesh, num_mesh, num_mesh * 2
 order = 1
 mydomain = Brick(l0=lx, l1=ly, l2=lz, n0=nx, n1=ny, n2=nz, order=order,
@@ -46,23 +46,25 @@ confining = p0 = 100e3  # confining pressure
 # vel_list = [vel] * loadStep_vel
 
 #
-vel = 0.001
-vel_list = [vel] * 40  # Monotonouw
-
-
-
 # vel = 0.001
-# vel_ld1= [vel*0.5] * 20
-# vel_unld= [-vel*0.5] * 12
-# vel_reld1 = [vel*0.5] * 20
-# # vel_ld1= [vel] * 9
-# # vel_unld= [-vel] * 5
-# # vel_reld1 = [vel] * 5
+# vel_list = [vel] * 40  # Monotonouw
+
+
+
+vel = 0.001
+vel_ld1= [vel*0.5] * 20
+vel_unld= [-vel*0.5] * 12
+vel_reld1 = [vel*0.5] * 12
+# vel_ld1= [vel] * 10
+# vel_unld= [-vel] * 6
+# vel_reld1 = [vel] * 10
 #
-# vel_reld= [vel*0.5] * 50
-# vel_list = vel_ld1 + vel_unld + vel_reld1 + vel_reld   # one circle
+vel_reld= [vel] * 35
 
-
+vel_list = vel_ld1 + vel_unld + vel_reld1 + vel_reld   # one circle
+# vel_list = vel_ld1 + vel_unld + vel_reld1  # one circle
+# vel_list = vel_ld1 + vel_unld + vel_reld1  # one circle
+# vel_list = vel_ld1 + vel_unld   # one circle
 
 
 
@@ -73,18 +75,19 @@ vel_list = [vel] * 40  # Monotonouw
 rtol = 1e-2
 
 # ---------------------------Cons model-------------------------------------
-mode = 'dem3d'  # 'mcc' 'net' 'dem' 'dem3d' 'csuh' 'mises' 'lade' 'uh' 'norsand'
+mode = 'mldem3d'  # 'mcc' 'net' 'dem' 'dem3d' 'csuh' 'mises' 'lade' 'uh' 'norsand'
 active_iter = None
 
 NN_sig_path = 'X_epsAND3d_Y_sig_dddd20_Fourier_noRotate_FEM_DEM_sig'
 NN_D_path = 'X_epsAND3d_Y_D_dddd20_Fourier_noRotate_FEM_DEM_D'
-
+NN_Dv_path = 'X_epsAND3d_Y_D_voigt_dddd20_Fourier_noRotate_FEM_DEM_Dv'
+NN_Dr_path = 'X_epsAND3d_Y_D_rest_dddd20_Fourier_noRotate_FEM_DEM_Dr'
 
 
 
 p0, e0, ocr, E, poisson, lam, G, rho, nn_name, kwargs = \
     explicit_material_constants(
-        # p0=confining,
+        p0=confining,
         # nn_name=None,
         nn_name = NN_sig_path,
         nn_name_D = NN_D_path,
@@ -96,7 +99,7 @@ p0, e0, ocr, E, poisson, lam, G, rho, nn_name, kwargs = \
 # for split_D
 # p0, e0, ocr, E, poisson, lam, G, rho, nn_name, kwargs = \
 #     explicit_material_constants(
-#         # p0=confining,
+#         p0=confining,
 #         # nn_name=None,
 #         nn_name=NN_sig_path,
 #         nn_name_Dv=NN_Dv_path,
@@ -134,7 +137,7 @@ loadInfor = get_load_information(
       nx=nx, ny=ny, order=order, numg=numg, **kwargs)
 
 
-loadInfor += '_Y4e8_fri0.5_p0.2_rM01_denser_accum_rotation_mono_contrast'
+loadInfor += '_Y4e8_fri0.5_p0.3_rM01_n1000_denser_accum_rotation'
 kwargs['save_path'] = loadInfor
 
 
@@ -155,7 +158,7 @@ cons = getCons(mode=mode, numg=numg, pool=None, nump=nump, explicitFlag=explicit
 
 
 prob = ImplicitSolver(domain=mydomain, cons=cons,  loadInfor=loadInfor,
-                      save_loading_flag=True if mode == 'dem3d' or mode == 'dem' else False)  # mpi is activated
+                      save_loading_flag=True if mode == 'mldem3d' or mode == 'dem' else False)  # mpi is activated
 
 echo(
     'CWD:           %s' % loadInfor,

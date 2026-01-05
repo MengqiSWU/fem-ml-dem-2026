@@ -80,7 +80,7 @@ class ImplicitSolver(escriptSolver):
             'D': D_data,
             'eps': self.eps + symmetric(u_grad),
             'eps_abs': self.eps_abs + u_grad*sign(u_grad),
-            'H_3F': self.setHistVector(scenes[2]),
+            # 'H_3F': self.setHistVector(scenes[2]),
             'sig_last': self.sig
         }
         save_loading(save_path=self.savePath, t=t, iter=iterate,  **save_dict)

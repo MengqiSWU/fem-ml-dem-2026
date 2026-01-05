@@ -8,8 +8,8 @@ inner_radius = 15.0;   // cavity radius a
 outer_radius = 150.0;  // farfield radius R
 
 // Mesh parameters
-n_radial = 10;        // divisions from inner to outer radius
-n_theta = 10;         // divisions along the 90° arc
+n_radial = 20;        // divisions from inner to outer radius
+n_theta = 20;         // divisions along the 90° arc
 radial_progression = 1.1; // >1 clusters toward inner radius
 
 // Points

@@ -103,26 +103,26 @@ def getCons(mode, ndim=3,  nump=1, explicitFlag=False, numg=None, **kwargs):   #
 
 
     #
-    # elif mode == 'mldem3d':
-    #     import torch
-    #     from FEMxEPxML.mldemCons3d_split_D import MlDemConstitutive
-    #     NN_sig = torch.load(
-    #         kwargs['NN_sig_path'],
-    #         map_location=torch.device('cpu'))
-    #
-    #     NN_Dv = None
-    #     if not explicitFlag:
-    #         NN_Dv = torch.load(
-    #             kwargs['NN_Dv_path'],
-    #             map_location=torch.device('cpu'))
-    #     NN_Dr = None
-    #     if not explicitFlag:
-    #         NN_Dr = torch.load(
-    #             kwargs['NN_Dr_path'],
-    #             map_location=torch.device('cpu'))
-    #
-    #     cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig,  NN_Dv=NN_Dv, NN_Dr=NN_Dr, explicitFlag=explicitFlag, numg=numg, nump=nump,
-    #                              rho=kwargs['rho'], input_features=kwargs['input_features'], save_path=kwargs['save_path'])
+    elif mode == 'mldem3d_split_D':
+        import torch
+        from FEMxEPxML.mldemCons3d_split_D import MlDemConstitutive
+        NN_sig = torch.load(
+            kwargs['NN_sig_path'],
+            map_location=torch.device('cpu'))
+
+        NN_Dv = None
+        if not explicitFlag:
+            NN_Dv = torch.load(
+                kwargs['NN_Dv_path'],
+                map_location=torch.device('cpu'))
+        NN_Dr = None
+        if not explicitFlag:
+            NN_Dr = torch.load(
+                kwargs['NN_Dr_path'],
+                map_location=torch.device('cpu'))
+
+        cons = MlDemConstitutive(p0=kwargs['p0'], NN_sig=NN_sig,  NN_Dv=NN_Dv, NN_Dr=NN_Dr, explicitFlag=explicitFlag, numg=numg, nump=nump,
+                                 rho=kwargs['rho'], input_features=kwargs['input_features'], save_path=kwargs['save_path'])
 
 
     # elif mode == 'mldem3d':
@@ -294,7 +294,8 @@ def explicit_material_constants(p0=None, nn_name=None, nn_name_D=None, nn_name_s
         # csuh_dic = get_dic_from_string(s='ocr:120. \t theta_degree:30. \t lambdaa:0.135 \t kappa:0.04 \t N:1.973 \t Z:0.933938655')
         # csuh_dic = get_dic_from_string(s='kappa:5.748e-02 	 lambdaa:1.500e-01 	 N:1.804e+00 	 Z:9.415e-01 	 ocr:3.207e+01 	 theta_degree:2.578e+01')  # fine
         # csuh_dic = get_dic_from_string(s='kappa:1.906e-01 	 lambdaa:2.142e-01 	 N:1.931e+00 	 Z:2.743e-01 	 ocr:3.774e+02 	 theta_degree:1.329e+01')  # optimized from the dataset collected from the dem simulation
-        csuh_dic = get_dic_from_string(s='kappa:1.906e-01 	 lambdaa:2.142e-01 	 N:1.931e+00 	 Z:2.743e-01 	 ocr:3.774e+02 	 theta_degree:8.')  # optimized from the dataset collected from the dem simulation
+        csuh_dic = get_dic_from_string(s='kappa:1.894e-01 	 lambdaa:2.205e-01 	 N:2.053e+00 	 Z:2.883e-01 	 ocr:3.701e+02 	 theta_degree:9.')
+        # csuh_dic = get_dic_from_string(s='kappa:1.906e-01 	 lambdaa:2.142e-01 	 N:1.931e+00 	 Z:2.743e-01 	 ocr:3.774e+02 	 theta_degree:8.')  # optimized from the dataset collected from the dem simulation
         # csuh_dic = get_dic_from_string(s='ocr:20. \t theta_degree:30. \t lambdaa:0.1689 \t kappa:0.1 \t N:2.021 \t Z:0.9358')
     else:
         # csuh_dic = get_dic_from_string('kappa:5.111e-02 	 lambdaa:1.485e-01 	 N:1.790e+00 	 Z:9.824e-01 	 ocr:3.833e+01 	 theta_degree:2.314e+01')

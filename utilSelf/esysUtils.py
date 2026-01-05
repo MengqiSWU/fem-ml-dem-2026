@@ -61,7 +61,7 @@ def boudaryCondition_3d(nx_, nx, ny_, ny,
 
 def boudaryCondition_3d_PBC(nx_, nx, ny_, ny,
         nz_, nz, fx_, fx, fy_, fy, where_confining, vel, out_normal, confining=1e5):
-    y= Data()
+    q, r, y, Y = Data(), Data(), Data(), Data()
     q = nx_ * [0, 1, 0] + nx * [0, 1, 0]\
         +ny_ * [0, 1, 0] + ny * [0, 1, 0]\
         + nz_ * [1, 1, 1] + nz * [1, 1, 1]
@@ -71,6 +71,16 @@ def boudaryCondition_3d_PBC(nx_, nx, ny_, ny,
 
 
     y = fx_*[confining, 0, 0]+fx*[-confining, 0, 0]
+    return q, r, y
+
+
+def boudaryCondition_cavityexpansion(nx, ny, n_in, n_out, fx, fy, f_in, f_out,
+                                     rc, vel, domain, out_normal, confining):
+    q, r, y = Data(), Data(), Data()
+    x = domain.getX()
+    q = nx * [1,0] + ny * [0,1] + n_in * [1, 1]
+    r = n_in * (vel/rc) * x
+    y = -confining * f_out * out_normal
     return q, r, y
 
 

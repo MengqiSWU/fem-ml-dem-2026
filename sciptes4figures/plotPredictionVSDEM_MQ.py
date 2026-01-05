@@ -24,13 +24,13 @@ x_data = np.concatenate((strain, H_3F),axis=1)
 
 
 # net restore
-# ml_model_path = os.path.join('../FEMxML/biax_ml_1e5/Trial4', 'X_epsAND3f_Y_D_ddd10_Fourier_noRotate_FEM_DEM_D')
-ml_model_path = os.path.join('../FEMxML/biax_ml_1e5/Trial4', 'X_epsAND3f_Y_sig_ddd10_Fourier_noRotate_FEM_DEM_sig')
+ml_model_path = os.path.join('../FEMxML/biax_ml_1e5/Trial4', 'X_epsAND3f_Y_D_ddd10_Fourier_noRotate_FEM_DEM_D')
+# ml_model_path = os.path.join('../FEMxML/biax_ml_1e5/Trial4', 'X_epsAND3f_Y_sig_ddd10_Fourier_noRotate_FEM_DEM_sig')
 
 net = modelRestore(savedPath=ml_model_path, trainFlag=False)
 # print(ml_model_path, net.input_mean[0])
 
-# tangent_predict = net.get_prediction(x_data)
+tangent_predict = net.get_prediction(x_data)
 stress_predict = net.get_prediction(x_data)
 
 # np.savetxt("tangent_predict.csv", tangent_predict, delimiter=',')

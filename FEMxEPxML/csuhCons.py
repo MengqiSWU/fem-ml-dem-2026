@@ -20,8 +20,6 @@ from utilSelf.general import echo, mapMask, get_dic_from_string
             110(March), 326–343. https://doi.org/10.1016/j.compgeo.2019.02.024
 
 '''
-
-
 class csuhConstitutive(ConstitutiveMask):
     def __init__(self, explicitFlag, numg, save_path, rho,
                  # parameters inversed from the footing-dem simulations
@@ -52,9 +50,10 @@ class csuh_single(constitutiveSingle):
     def __init__(self,
                  kappa, lambdaa, N, Z, ocr,  theta_degree=None, M=1.25,
                  nu=0.2, m=1.8, p0=1e5, ndim=2,
-                 verboseFlag=False, explicitFlag=True):
+                 verboseFlag=False, explicitFlag=True,b_flag=False):
         constitutiveSingle.__init__(self, p0=p0, ndim=ndim)
         # -----------------Parameters (fundamental)------------------
+        self.b_flag = b_flag
         self.M = get_M(theta_degree=theta_degree) if theta_degree else M   # ratio at critical state
         self.lambdaa = lambdaa
         self.kappa = kappa

@@ -3,7 +3,7 @@ import numpy as np
 from utilSelf.general import echo, mapMask
 from FEMxEPxML.utils_constitutive import tensor2_tensor3, get_elasticMatrix, returnedDatasDecode
 from utilSelf.saveGauss import save_loading
-
+from multiprocessing import Pool
 
 class ConstitutiveMask:
     def __init__(self, p0, ndim, explicitFlag, numg, save_path: str, nump: int,
@@ -47,11 +47,13 @@ class ConstitutiveMask:
         self.t += 1
 
     def solver(self, deps):
-        if len(deps[0]) == 2:
+
+        if len(deps[0]) == 2 and ('misesideal' not in self.name and self.name != 'drucker'):
             deps = tensor2_tensor3(t2=deps)
         param = list(zip(self.solvers, deps))
-        if self.pool:
-            datas = self.pool.map(mapMask, param)
+        if self.nump > 1:
+            with Pool(processes=self.nump) as pool:
+                datas = pool.map(mapMask, param)
         else:
             datas = []
             for i in range(self.numg):

@@ -151,7 +151,7 @@ def get_data_3d(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False
     D_rest  = tangent[:,index_r]
     H_3D = np.array(H_3D)
     # H_3D[:, 2] = np.sqrt(4 * H_3D[:, 2] / 3)
-    H_2D = H_3D[:, [0,1]]
+    # H_2D = H_3D[:, [0,1]]
 
     # add the initial state to the dataset
     # strain = np.concatenate((strain, np.array([[0.,0.,0.] for _ in range(n)])), axis=0)
@@ -164,7 +164,7 @@ def get_data_3d(root_path_list,  maxTime=100, mixflag=False, explicit_flag=False
         'sigr': stress_r,
         'eps_abs':strain_abs,
         'H_3D' : H_3D,
-        'H_2D': H_2D
+        # 'H_2D': H_2D
     }
     if len(tangent)!=0:
         returned_dict['tangent'] = tangent
@@ -524,7 +524,7 @@ def get_data_series(
     '''
         series_flag used to ONLY read the converged results in the implicit datasets
     '''
-    data_dic = get_data(
+    data_dic = get_data_3d(
         root_path_list, maxTime=maxTime, mixflag=mixflag,
         explicit_flag=explicit_flag, series_flag=series_flag, add_flag=add_flag)
     for key in data_dic.keys():

@@ -142,5 +142,5 @@ def save_loading(save_path, t: int, iter=None, special_str=None,  **kwargs):
         fname += '_%s.dat' % special_str
     else:
         fname += '.dat'
-    # saveGauss2D(name=fname,special_str=special_str, **kwargs)
-    saveGauss3D(name=fname, special_str=special_str, **kwargs)
+    saveGauss2D(name=fname,special_str=special_str, **kwargs)
+    # saveGauss3D(name=fname, special_str=special_str, **kwargs)
